@@ -1,17 +1,110 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 10px; width: 200px; }
-    label { display: block; margin-bottom: 8px; }
-  </style>
-</head>
-<body>
-  <h3>Toggle Elements</h3>
-  <label><input type="checkbox" id="status"> Show Status</label>
-  <label><input type="checkbox" id="channels"> Show Channels</label>
-  <label><input type="checkbox" id="communities"> Show Communities</label>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Popup</title>
+    <style>
+      :root {
+        --bg-color: #1e1e2f;
+        --text-color: #f1f1f1;
+        --accent-color: #4caf50;
+        --accent-hover: #66bb6a;
+        --border-color: #333;
+      }
 
-  <script src="popup.js"></script>
-</body>
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Roboto, sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        padding: 16px;
+        width: 240px;
+        margin: 0;
+      }
+
+      h3 {
+        margin: 20px 0 10px;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: #aaa;
+      }
+
+      label {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        padding: 6px 8px;
+        border-radius: 6px;
+        user-select: none;
+      }
+
+      label:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+
+      input[type="checkbox"] {
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        margin-right: 10px;
+        border: 2px solid var(--border-color);
+        border-radius: 4px;
+        background-color: transparent;
+        transition: all 0.2s ease-in-out;
+        position: relative;
+      }
+
+      input[type="checkbox"]:checked {
+        background-color: var(--accent-color);
+        border-color: var(--accent-color);
+      }
+
+      input[type="checkbox"]:checked::after {
+        content: "";
+        position: absolute;
+        left: 4px;
+        top: 0px;
+        width: 5px;
+        height: 10px;
+        border: solid #fff;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+      }
+
+      label span {
+        flex: 1;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <h3>Toggle Elements</h3>
+    <label><input type="checkbox" id="status" /><span>Show Status</span></label>
+    <label
+      ><input type="checkbox" id="channels" /><span>Show Channels</span></label
+    >
+    <label
+      ><input type="checkbox" id="communities" /><span
+        >Show Communities</span
+      ></label
+    >
+
+    <h3>Chat Elements</h3>
+    <label
+      ><input type="checkbox" id="lockedChats" /><span
+        >Show Locked Chats</span
+      ></label
+    >
+    <label
+      ><input type="checkbox" id="archived" /><span>Show Archived</span></label
+    >
+
+    <script src="popup.js"></script>
+  </body>
 </html>

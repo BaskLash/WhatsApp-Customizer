@@ -1,9 +1,13 @@
 function initBurgerMenu() {
-  const container = document.querySelector(".x1c4vz4f.xs83m0k.xdl72j9.x1g77sc7.x78zum5.xozqiw3.x1oa3qoh.x12fk4p8.xeuugli.x2lwn1j.x1nhvcw1.xdt5ytf.x1cy8zhl.x1277o0a");
-  const toggleTarget = document.querySelector("._aigw._as6h.x9f619.x1n2onr6.x5yr21d.x17dzmu4.x1i1dayz.x2ipvbc.x1w8yi2h.x78zum5.xdt5ytf.x12xzxwr.x1plvlek.xryxfnj.x14bqcqg.x18dvir5.xxljpkc.xwfak60.x18pi947");
+  const container = document.querySelector(
+    ".x1c4vz4f.xs83m0k.xdl72j9.x1g77sc7.x78zum5.xozqiw3.x1oa3qoh.x12fk4p8.xeuugli.x2lwn1j.x1nhvcw1.xdt5ytf.x1cy8zhl.x1277o0a"
+  );
+  const toggleTarget = document.querySelector(
+    "._aigw._as6h.x9f619.x1n2onr6.x5yr21d.x17dzmu4.x1i1dayz.x2ipvbc.x1w8yi2h.x78zum5.xdt5ytf.x12xzxwr.x1plvlek.xryxfnj.x14bqcqg.x18dvir5.xxljpkc.xwfak60.x18pi947"
+  );
 
   if (container && toggleTarget) {
-    if (document.querySelector('.custom-burger-menu')) return;
+    if (document.querySelector(".custom-burger-menu")) return;
 
     const burgerButton = document.createElement("button");
     burgerButton.className = "custom-burger-menu";
@@ -51,7 +55,8 @@ function initBurgerMenu() {
     burgerButton.addEventListener("click", () => {
       const currentDisplay = window.getComputedStyle(toggleTarget).display;
       toggleTarget.style.display = currentDisplay === "none" ? "block" : "none";
-      burgerButton.title = currentDisplay === "none" ? "Disable Side Nav" : "Enable Side Nav";
+      burgerButton.title =
+        currentDisplay === "none" ? "Disable Side Nav" : "Enable Side Nav";
     });
 
     container.insertBefore(burgerButton, container.firstChild);
@@ -65,21 +70,42 @@ function applyVisibilityOptions() {
     const options = data.visibilityOptions || {
       status: true,
       channels: true,
-      communities: true
+      communities: true,
+      lockedChats: true,
+      archived: true,
     };
 
-    const parent = document.querySelector(".x1c4vz4f.xs83m0k.xdl72j9.x1g77sc7.x78zum5.xozqiw3.x1oa3qoh.x12fk4p8.xeuugli.x2lwn1j.x1nhvcw1.xdt5ytf.x1cy8zhl.x1277o0a");
-    if (!parent) return;
+    const parent = document.querySelector(
+      ".x1c4vz4f.xs83m0k.xdl72j9.x1g77sc7.x78zum5.xozqiw3.x1oa3qoh.x12fk4p8.xeuugli.x2lwn1j.x1nhvcw1.xdt5ytf.x1cy8zhl.x1277o0a"
+    );
+    if (parent) {
+      const divChildren = Array.from(parent.children).filter(
+        (child) => child.tagName.toLowerCase() === "div"
+      );
+      const map = { status: 1, channels: 2, communities: 3 };
 
-    const divChildren = Array.from(parent.children).filter(child => child.tagName.toLowerCase() === "div");
+      for (const key in map) {
+        const index = map[key];
+        if (divChildren[index]) {
+          divChildren[index].style.display = options[key] ? "block" : "none";
+        }
+      }
+    }
 
-    // [1,2,3] → Status, Channels, Communities
-    const map = { status: 1, channels: 2, communities: 3 };
+    // Handle Locked Chats and Archived
+    const paneSide = document.getElementById("pane-side");
+    if (paneSide) {
+      const lockedChats = paneSide.querySelector(
+        "button[aria-label='Locked chats']"
+      );
+      const archived = paneSide.querySelector("button[aria-label='Archived ']");
 
-    for (const key in map) {
-      const index = map[key];
-      if (divChildren[index]) {
-        divChildren[index].style.display = options[key] ? "block" : "none";
+      if (lockedChats) {
+        lockedChats.style.display = options.lockedChats ? "block" : "none";
+      }
+
+      if (archived) {
+        archived.style.display = options.archived ? "block" : "none";
       }
     }
   });

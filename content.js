@@ -300,6 +300,7 @@ function runAll() {
 // Starte, wenn die Seite geladen ist
 document.addEventListener("DOMContentLoaded", runAll);
 window.addEventListener("load", runAll);
+window.addEventListener("load", customThemes);
 setTimeout(runAll, 3000); // Fallback für verzögertes Laden
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {

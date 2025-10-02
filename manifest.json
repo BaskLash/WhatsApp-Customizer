@@ -16,9 +16,20 @@
   "content_scripts": [
     {
       "matches": ["https://web.whatsapp.com/"],
-      "js": ["content.js"],
+      "js": ["changeContent.js", "content.js"],
       "run_at": "document_idle"
     }
   ],
-  "host_permissions": ["https://web.whatsapp.com/"]
+  "host_permissions": ["https://web.whatsapp.com/"],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "images/anime.jpg",
+        "images/full-shot-ninja-winter-season.jpg",
+        "images/full-shot-ninja-wearing-equipment.jpg",
+        "images/pexels-george-desipris-792381.jpg"
+      ],
+      "matches": ["https://web.whatsapp.com/*"]
+    }
+  ]
 }

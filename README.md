@@ -94,3 +94,4 @@ if (container && toggleTarget) {
   console.warn("Eines der Ziel-Elemente wurde nicht gefunden.");
 }
 ```
+Für die Hintergrundauswahl kann man dann auswählen, welches Bild man für die Welcome Page haben möchte, welches Bild für die seitennavigation und welches bild für den chat hauptbereich. Dabei sollte man die Möglichkeit haben von einer vielzahl an Bildern, GIF's Memes, alles schön kategorisiert und leicht auffindbar.

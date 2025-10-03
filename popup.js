@@ -86,3 +86,17 @@ checkboxIds.forEach((id) => {
 });
 
 loadOptions();
+// Color Input auswählen
+const colorInput = document.querySelector("input[type='color']");
+
+if (colorInput) {
+  // Beim Ändern des Inputs den Wert speichern
+  colorInput.addEventListener("input", (e) => {
+    const selectedColor = e.target.value; // z. B. "#ff0000"
+
+    // In chrome.storage.local unter "color" speichern
+    chrome.storage.local.set({ color: selectedColor }, () => {
+      console.log("Farbe gespeichert:", selectedColor);
+    });
+  });
+}

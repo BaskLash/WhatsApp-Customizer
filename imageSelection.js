@@ -1,7 +1,7 @@
 // Beim Laden des Popups gespeicherte Bilder setzen
 document.addEventListener("DOMContentLoaded", () => {
-  const previewIds = ["welcome", "sidenav", "chatview"];
-  
+  const previewIds = ["welcome", "sidenav", "chatview", "navside"];
+
   chrome.storage.local.get(previewIds, (result) => {
     previewIds.forEach((id) => {
       const previewImg = document.getElementById(`${id}-preview`);
@@ -13,7 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
-
 
 let currentType = null;
 let selectedSrc = null;

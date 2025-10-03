@@ -6,6 +6,24 @@ function customThemes() {
     const main = document.getElementById("main");
     const parent = document.querySelector('div[tabindex="-1"][class^="two"]');
     const grid = document.querySelector('div[role="grid"]');
+    const headerEl = document.querySelector("header[tabindex='0']");
+
+    if (headerEl) {
+      chrome.storage.local.get(["navside"], (result) => {
+        // Falls lokale Datei in Extension, nutze chrome.runtime.getURL
+        const getImageURL = (src) =>
+          src && src.startsWith("images/") ? chrome.runtime.getURL(src) : src;
+
+        // result.navside ist der gespeicherte Bildpfad/URL
+        const navsideImage = getImageURL(result.navside);
+
+        if (navsideImage) {
+          headerEl.style.backgroundImage = `url('${navsideImage}')`;
+          headerEl.style.backgroundSize = "cover";
+          headerEl.style.backgroundPosition = "center";
+        }
+      });
+    }
 
     if ((paneSide || grid) && (main || parent)) {
       // Lade gespeicherte Bilder

@@ -90,7 +90,15 @@ loadOptions();
 const colorInput = document.querySelector("input[type='color']");
 
 if (colorInput) {
-  // Beim Ändern des Inputs den Wert speichern
+  // 1️⃣ Gespeicherte Farbe beim Laden des Popups setzen
+  chrome.storage.local.get(["color"], (result) => {
+    if (result.color) {
+      colorInput.value = result.color;
+      console.log("Gespeicherte Farbe geladen:", result.color);
+    }
+  });
+
+  // 2️⃣ Beim Ändern des Inputs den Wert speichern
   colorInput.addEventListener("input", (e) => {
     const selectedColor = e.target.value; // z. B. "#ff0000"
 

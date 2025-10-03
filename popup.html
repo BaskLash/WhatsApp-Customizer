@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <title>Bildauswahl-Popup</title>
     <script src="popup.js" defer></script>
+    <script src="imageSelection.js" defer></script>
     <style>
       :root {
         --bg-color: #1e1e2f;
@@ -14,17 +15,13 @@
         --card-bg: #2a2a3b;
       }
 
-      * {
-        box-sizing: border-box;
-      }
-
       body {
         font-family: "Segoe UI", Roboto, sans-serif;
         background-color: var(--bg-color);
         color: var(--text-color);
         margin: 0;
         padding: 0;
-        width: 700px; /* Breiter für 2-Spalten Layout */
+        width: 700px;
         height: 600px;
       }
 
@@ -32,7 +29,6 @@
         margin: 20px 0 10px;
         font-size: 14px;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
         color: #aaa;
       }
 
@@ -41,29 +37,27 @@
         height: 100vh;
       }
 
-      .left-panel,
-      .right-panel {
-        padding: 16px;
-        overflow-y: auto;
-      }
-
       .left-panel {
         flex: 1;
         border-right: 1px solid var(--border-color);
+        padding: 16px;
       }
 
       .right-panel {
         flex: 2;
+        padding: 16px;
       }
 
       .section {
         margin-bottom: 20px;
       }
 
-      .image-selector {
+      .image-selector,
+      .image-option {
         display: flex;
         flex-wrap: wrap;
         gap: 10px;
+        cursor: pointer;
       }
 
       .image-option {
@@ -72,8 +66,6 @@
         border: 2px solid var(--border-color);
         border-radius: 6px;
         overflow: hidden;
-        cursor: pointer;
-        transition: border-color 0.2s ease;
       }
 
       .image-option.selected {
@@ -86,19 +78,6 @@
         object-fit: cover;
       }
 
-      .preview-container {
-        background-color: var(--card-bg);
-        padding: 10px;
-        border-radius: 6px;
-        margin-top: 10px;
-      }
-
-      .preview-container h4 {
-        margin: 0 0 10px;
-        font-size: 12px;
-        color: #aaa;
-      }
-
       .preview-image {
         width: 100%;
         max-height: 100px;
@@ -106,228 +85,124 @@
         border-radius: 4px;
       }
 
-      .button-container {
+      /* Modal Style */
+      #image-modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      #image-modal .modal-content {
+        background: var(--card-bg);
+        padding: 20px;
+        border-radius: 8px;
+        max-width: 600px;
+        max-height: 80vh;
+        overflow-y: auto;
+        color: var(--text-color);
+      }
+
+      #modal-gallery {
         display: flex;
+        flex-wrap: wrap;
         gap: 10px;
         margin-top: 10px;
       }
 
-      button {
-        padding: 8px 16px;
-        background-color: var(--accent-color);
-        color: #fff;
+      #modal-gallery .image-option {
+        width: 100px;
+        height: 100px;
+      }
+
+      .modal-buttons {
+        margin-top: 20px;
+        display: flex;
+        gap: 10px;
+      }
+
+      .modal-buttons button {
+        flex: 1;
+        padding: 10px;
         border: none;
         border-radius: 4px;
-        cursor: pointer;
-        font-size: 13px;
-        transition: background-color 0.2s ease;
-      }
-
-      button:hover {
-        background-color: var(--accent-hover);
-      }
-
-      input[type="file"] {
-        display: none;
-      }
-
-      .upload-label {
-        display: inline-block;
-        padding: 8px 16px;
-        background-color: var(--accent-color);
+        background: var(--accent-color);
         color: #fff;
-        border-radius: 4px;
         cursor: pointer;
-        font-size: 13px;
-        transition: background-color 0.2s ease;
       }
 
-      .upload-label:hover {
-        background-color: var(--accent-hover);
-      }
-
-      label {
-        display: flex;
-        align-items: center;
-        margin-bottom: 12px;
-        cursor: pointer;
-        transition: background-color 0.2s ease;
-        padding: 6px 8px;
-        border-radius: 6px;
-        user-select: none;
-      }
-
-      label:hover {
-        background-color: rgba(255, 255, 255, 0.05);
-      }
-
-      input[type="checkbox"] {
-        appearance: none;
-        width: 18px;
-        height: 18px;
-        margin-right: 10px;
-        border: 2px solid var(--border-color);
-        border-radius: 4px;
-        background-color: transparent;
-        transition: all 0.2s ease-in-out;
-        position: relative;
-      }
-
-      input[type="checkbox"]:checked {
-        background-color: var(--accent-color);
-        border-color: var(--accent-color);
-      }
-
-      input[type="checkbox"]:checked::after {
-        content: "";
-        position: absolute;
-        left: 4px;
-        top: 0px;
-        width: 5px;
-        height: 10px;
-        border: solid #fff;
-        border-width: 0 2px 2px 0;
-        transform: rotate(45deg);
-      }
-
-      label span {
-        flex: 1;
-        font-size: 13px;
+      .modal-buttons button:hover {
+        background: var(--accent-hover);
       }
     </style>
   </head>
   <body>
     <h1>WhatsApp Customizer</h1>
     <div class="container">
-      <!-- Linke Seite: Toggles -->
       <div class="left-panel">
         <h3>Toggle Elements</h3>
-        <label><input type="checkbox" id="status" /><span>Show Status</span></label>
-        <label><input type="checkbox" id="channels" /><span>Show Channels</span></label>
-        <label><input type="checkbox" id="communities" /><span>Show Communities</span></label>
+        <label><input type="checkbox" id="status" /> Show Status</label><br />
+        <label><input type="checkbox" id="channels" /> Show Channels</label
+        ><br />
+        <label
+          ><input type="checkbox" id="communities" /> Show Communities</label
+        ><br />
 
         <h3>Chat Elements</h3>
-        <label><input type="checkbox" id="lockedChats" /><span>Show Locked Chats</span></label>
-        <label><input type="checkbox" id="archived" /><span>Show Archived</span></label>
+        <label
+          ><input type="checkbox" id="lockedChats" /> Show Locked Chats</label
+        ><br />
+        <label><input type="checkbox" id="archived" /> Show Archived</label>
       </div>
 
-      <!-- Rechte Seite: Bildauswahl + Vorschau -->
       <div class="right-panel">
         <div class="section">
-          <h3>Bildauswahl</h3>
+          <h3>Welcome Page</h3>
           <div class="image-selector" id="welcome-selector">
-            <div class="image-option" data-type="welcome" data-src="img1.jpg">
-              <img src="images/anime.jpg" alt="Bild 1" />
+            <div class="image-option" data-type="welcome">
+              <img
+                id="welcome-preview"
+                src="default.jpg"
+                alt="Welcome Preview"
+              />
             </div>
-            <div class="image-option" data-type="welcome" data-src="img2.jpg">
-              <img src="img2.jpg" alt="Bild 2" />
-            </div>
-          </div>
-          <div class="preview-container">
-            <h4>Vorschau: Welcome Page</h4>
-            <img class="preview-image" id="welcome-preview" src="img1.jpg" alt="Vorschau" />
           </div>
         </div>
 
         <div class="section">
           <h3>Seiten-Navigation</h3>
-          <div class="image-selector" id="nav-selector">
-            <div class="image-option" data-type="nav" data-src="nav1.jpg">
-              <img src="nav1.jpg" alt="Nav Bild 1" />
+          <div class="image-selector" id="sidenav-selector">
+            <div class="image-option" data-type="sidenav">
+              <img id="sidenav-preview" src="default.jpg" alt="Nav Preview" />
             </div>
-            <div class="image-option" data-type="nav" data-src="nav2.jpg">
-              <img src="nav2.jpg" alt="Nav Bild 2" />
-            </div>
-          </div>
-          <div class="preview-container">
-            <h4>Vorschau: Seiten-Navigation</h4>
-            <img class="preview-image" id="nav-preview" src="nav1.jpg" alt="Vorschau" />
           </div>
         </div>
 
         <div class="section">
           <h3>Chat-Ansicht</h3>
-          <div class="image-selector" id="chat-selector">
-            <div class="image-option" data-type="chat" data-src="chat1.jpg">
-              <img src="chat1.jpg" alt="Chat Bild 1" />
+          <div class="image-selector" id="chatview-selector">
+            <div class="image-option" data-type="chatview">
+              <img id="chatview-preview" src="default.jpg" alt="Chat Preview" />
             </div>
-            <div class="image-option" data-type="chat" data-src="chat2.jpg">
-              <img src="chat2.jpg" alt="Chat Bild 2" />
-            </div>
-          </div>
-          <div class="preview-container">
-            <h4>Vorschau: Chat-Ansicht</h4>
-            <img class="preview-image" id="chat-preview" src="chat1.jpg" alt="Vorschau" />
-          </div>
-        </div>
-
-        <div class="section">
-          <h3>Bild hochladen</h3>
-          <label class="upload-label" for="image-upload">Bild/GIF hochladen</label>
-          <input type="file" id="image-upload" accept="image/*,.gif" />
-          <div class="button-container">
-            <button id="apply-btn">Übernehmen</button>
-            <button id="cancel-btn">Abbrechen</button>
-          </div>
-        </div>
-
-        <div class="section">
-          <h3>WhatsApp-Vorschau</h3>
-          <div class="preview-container">
-            <h4>Aktuelle Ansicht in WhatsApp</h4>
-            <img class="preview-image" id="whatsapp-preview" src="default.jpg" alt="WhatsApp Vorschau" />
           </div>
         </div>
       </div>
     </div>
 
-    <script>
-      // Bildauswahl-Logik
-      const selectors = document.querySelectorAll(".image-selector");
-      selectors.forEach((selector) => {
-        const type = selector.id.split("-")[0];
-        selector.addEventListener("click", (e) => {
-          const option = e.target.closest(".image-option");
-          if (!option) return;
-
-          selector.querySelectorAll(".image-option").forEach((opt) => opt.classList.remove("selected"));
-          option.classList.add("selected");
-
-          const src = option.dataset.src;
-          document.getElementById(`${type}-preview`).src = src;
-          document.getElementById("whatsapp-preview").src = src;
-        });
-      });
-
-      // Upload-Logik
-      const uploadInput = document.getElementById("image-upload");
-      uploadInput.addEventListener("change", (e) => {
-        const file = e.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.onload = (event) => {
-            const src = event.target.result;
-            const newOption = document.createElement("div");
-            newOption.classList.add("image-option");
-            newOption.dataset.type = "welcome";
-            newOption.dataset.src = src;
-            newOption.innerHTML = `<img src="${src}" alt="Uploaded Image" />`;
-            document.getElementById("welcome-selector").appendChild(newOption);
-            document.getElementById("welcome-preview").src = src;
-            document.getElementById("whatsapp-preview").src = src;
-          };
-          reader.readAsDataURL(file);
-        }
-      });
-
-      // Buttons
-      document.getElementById("apply-btn").addEventListener("click", () => {
-        alert("Einstellungen übernommen!");
-      });
-
-      document.getElementById("cancel-btn").addEventListener("click", () => {
-        window.close();
-      });
-    </script>
+    <!-- Modal -->
+    <div id="image-modal">
+      <div class="modal-content">
+        <h3 id="modal-title">Bildauswahl</h3>
+        <div id="modal-gallery"></div>
+        <div class="modal-buttons">
+          <button id="modal-save">Speichern</button>
+          <button id="modal-none">Kein Bild</button>
+          <button id="modal-cancel">Abbrechen</button>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

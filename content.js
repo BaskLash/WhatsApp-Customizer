@@ -308,3 +308,48 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     applyVisibilityOptions();
   }
 });
+
+// Funktion, die die Schrift global setzt
+function applyFont(fontName) {
+  // Entferne alte Tags, falls vorhanden
+  let existingLink = document.getElementById("dynamicFontLink");
+  let existingStyle = document.getElementById("dynamicFontStyle");
+
+  if (existingLink) existingLink.remove();
+  if (existingStyle) existingStyle.remove();
+
+  if (!fontName) return; // Keine Schrift ausgewählt, nichts tun
+
+  // --- 1. Google Font Link einfügen ---
+  const link = document.createElement("link");
+  link.id = "dynamicFontLink";
+  link.rel = "stylesheet";
+  link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(
+    fontName.trim()
+  )}&display=swap`;
+  document.head.appendChild(link);
+
+  // --- 2. Style-Tag hinzufügen, Schrift global setzen ---
+  const style = document.createElement("style");
+  style.id = "dynamicFontStyle";
+  style.innerHTML = `
+    * {
+      font-family: '${fontName}', sans-serif !important;
+    }
+  `;
+  document.head.appendChild(style);
+}
+
+// 1️⃣ Beim Laden prüfen, ob schon ein Font gespeichert ist
+chrome.storage.local.get(["fontStyle"], (result) => {
+  const fontName = result.fontStyle || "";
+  applyFont(fontName);
+});
+
+// 2️⃣ Änderungen an fontStyle direkt anwenden
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName === "local" && changes.fontStyle) {
+    const newFont = changes.fontStyle.newValue || "";
+    applyFont(newFont);
+  }
+});

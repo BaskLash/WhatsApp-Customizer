@@ -16,7 +16,7 @@
   "content_scripts": [
     {
       "matches": ["https://web.whatsapp.com/"],
-      "js": ["changeContent.js", "content.js"],
+      "js": ["fontFamilyChange.js", "changeContent.js", "content.js"],
       "run_at": "document_idle"
     }
   ],

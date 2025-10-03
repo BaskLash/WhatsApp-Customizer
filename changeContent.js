@@ -90,18 +90,54 @@ function customThemes() {
         // Chat list items
         if (grid) {
           Array.from(grid.children).forEach((child) => {
-            child.style.opacity = "0.7";
             const innerChild =
               child?.children?.[0]?.children?.[0]?.children?.[0];
             if (innerChild) {
+              // Nur den Hintergrund leicht transparent machen
+              innerChild.style.backgroundColor = "rgba(255, 255, 255, 0.7)";
               innerChild.style.border = "2px solid black";
               innerChild.style.borderRadius = "20px";
-              innerChild.style.color = "black";
+
+              // Funktion, um rekursiv alle Textelemente auf schwarz + bold zu setzen
+              function setTextBlackBold(element) {
+                // Prüfen, ob es ein sichtbarer Text ist
+                if (element.nodeType === Node.ELEMENT_NODE) {
+                  element.style.setProperty("color", "black", "important");
+                  element.style.fontWeight = "bold";
+                  element.style.fontSize = "1.2rem";
+                  Array.from(element.children).forEach(setTextBlackBold);
+                }
+              }
+
+              setTextBlackBold(innerChild);
             }
           });
         }
       });
     }
+    console.log("Making header transparent");
+    // Select the header
+    const header = document.querySelector("div#main > header");
+
+    if (header) {
+      // Set the text color to white (important)
+      header.style.setProperty("color", "white", "important");
+
+      // Make the background transparent without affecting children
+      header.style.background = "none";
+    }
+
+    // const topload = document.querySelector("div#side>div._ak9t");
+    // if (topload) {
+    //   topload.style.background = "red"; // fully transparent
+    // }
+
+    // const offload = document.querySelector(
+    //   "div#side>div[tabindex='-1'][role='tablist']"
+    // );
+    // if (offload) {
+    //   offload.style.background = "none"; // fully transparent
+    // }
   }, 500);
 }
 

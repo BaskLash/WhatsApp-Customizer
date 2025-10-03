@@ -108,3 +108,44 @@ if (colorInput) {
     });
   });
 }
+document.getElementById("discoButton").addEventListener("click", function () {
+  // Disco-Farben als Array
+  const discoColors = ["#ff00ff", "#00ffff", "#ff00ff"];
+
+  // In chrome.storage.local speichern
+  chrome.storage.local.set({ color: discoColors }, () => {
+    console.log("Disco-Farben gespeichert:", discoColors);
+
+    // Optional: direkt das Color Input auf die erste Farbe setzen
+    const colorInput = document.querySelector("input[type='color']");
+    if (colorInput) colorInput.value = discoColors[0];
+  });
+});
+
+document.getElementById("discoButton2").addEventListener("click", function () {
+  // Neue Disco-Farben als Array
+  const discoColors = ["#ff0000", "#00ff00", "#0000ff"]; // Rot, Grün, Blau
+
+  // In chrome.storage.local speichern
+  chrome.storage.local.set({ color: discoColors }, () => {
+    console.log("Disco-Farben gespeichert:", discoColors);
+
+    // Optional: direkt das Color Input auf die erste Farbe setzen
+    const colorInput = document.querySelector("input[type='color']");
+    if (colorInput) colorInput.value = discoColors[0];
+  });
+});
+
+document.getElementById("discoButton3").addEventListener("click", function () {
+  // Farben leeren
+  const emptyColors = [];
+
+  // In chrome.storage.local speichern
+  chrome.storage.local.set({ color: emptyColors }, () => {
+    console.log("Farben geleert");
+
+    // Color Input zurücksetzen (optional auf Standardwert #000000)
+    const colorInput = document.querySelector("input[type='color']");
+    if (colorInput) colorInput.value = "#000000";
+  });
+});

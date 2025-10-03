@@ -1,13 +1,31 @@
+// Beim Laden des Popups gespeicherte Bilder setzen
+document.addEventListener("DOMContentLoaded", () => {
+  const previewIds = ["welcome", "sidenav", "chatview"];
+  
+  chrome.storage.local.get(previewIds, (result) => {
+    previewIds.forEach((id) => {
+      const previewImg = document.getElementById(`${id}-preview`);
+      if (result[id]) {
+        previewImg.src = chrome.runtime.getURL(result[id]);
+      } else {
+        previewImg.src = "default.jpg";
+      }
+    });
+  });
+});
+
+
 let currentType = null;
 let selectedSrc = null;
+const imageCache = new Map(); // Cache für geladene Bilder
 
 const modal = document.getElementById("image-modal");
 const modalGallery = document.getElementById("modal-gallery");
 const modalTitle = document.getElementById("modal-title");
 
-// Hilfsfunktion: Alle Bilder aus allen Kategorien sammeln (einzigartige Pfade)
+// Alle eindeutigen Bilder aus allen Kategorien sammeln
 function getAllImages(data) {
-  const imagesSet = new Set(); // Set für eindeutige Pfade
+  const imagesSet = new Set();
   for (const category in data) {
     if (data[category].files && Array.isArray(data[category].files)) {
       data[category].files.forEach((src) => imagesSet.add(src));
@@ -16,46 +34,40 @@ function getAllImages(data) {
   return Array.from(imagesSet);
 }
 
+// Bild aus Cache laden oder neu erstellen
+function getCachedImage(src) {
+  if (imageCache.has(src)) {
+    return imageCache.get(src); // schon geladenes Image zurückgeben
+  }
+
+  const img = new Image();
+  img.src = chrome.runtime.getURL(src);
+  imageCache.set(src, img); // direkt ins Cache setzen
+  return img;
+}
+
 function openModal(type) {
   currentType = type;
-  modalTitle.textContent = `Bildauswahl für ${type}`;
+  modalTitle.textContent = `Image selection for ${type}`;
   modalGallery.innerHTML = "";
   selectedSrc = null;
 
   fetch(chrome.runtime.getURL("images.json"))
     .then((res) => res.json())
     .then((data) => {
-      const images = getAllImages(data); // alle eindeutigen Bilder sammeln
-      const fragment = document.createDocumentFragment(); // effizienter Container
+      const images = getAllImages(data);
+      const fragment = document.createDocumentFragment();
 
-      // IntersectionObserver für Lazy Loading
-      const observer = new IntersectionObserver(
-        (entries, obs) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              const img = entry.target;
-              img.src = img.dataset.src; // echtes Bild laden
-              obs.unobserve(img);
-            }
-          });
-        },
-        { root: modalGallery, rootMargin: "50px", threshold: 0.1 }
-      );
-
-      images.forEach((src) => {
+      for (const src of images) {
         const option = document.createElement("div");
         option.className = "image-option";
         option.dataset.src = src;
 
-        const img = document.createElement("img");
+        // Bild direkt aus Cache oder neu
+        const img = getCachedImage(src).cloneNode();
         img.alt = "";
-        img.dataset.src = chrome.runtime.getURL(src); // URL erstmal in dataset
-        img.src = "placeholder.jpg"; // optionaler Platzhalter
-        img.loading = "lazy"; // native lazy loading zusätzlich
+        img.loading = "lazy"; // native lazy loading
         option.appendChild(img);
-
-        // Observer registrieren
-        observer.observe(img);
 
         option.addEventListener("click", () => {
           modalGallery
@@ -66,9 +78,9 @@ function openModal(type) {
         });
 
         fragment.appendChild(option);
-      });
+      }
 
-      modalGallery.appendChild(fragment); // alles auf einmal einfügen
+      modalGallery.appendChild(fragment);
     });
 
   modal.style.display = "flex";

@@ -61,8 +61,8 @@
       }
 
       .image-option {
-        width: 80px;
-        height: 80px;
+        width: 100px;
+        height: 100px;
         border: 2px solid var(--border-color);
         border-radius: 6px;
         overflow: hidden;
@@ -137,6 +137,54 @@
       .modal-buttons button:hover {
         background: var(--accent-hover);
       }
+      label {
+        display: flex;
+        align-items: center;
+        margin-bottom: 12px;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+        padding: 6px 8px;
+        border-radius: 6px;
+        user-select: none;
+      }
+
+      label:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+
+      input[type="checkbox"] {
+        appearance: none;
+        width: 18px;
+        height: 18px;
+        margin-right: 10px;
+        border: 2px solid var(--border-color);
+        border-radius: 4px;
+        background-color: transparent;
+        transition: all 0.2s ease-in-out;
+        position: relative;
+      }
+
+      input[type="checkbox"]:checked {
+        background-color: var(--accent-color);
+        border-color: var(--accent-color);
+      }
+
+      input[type="checkbox"]:checked::after {
+        content: "";
+        position: absolute;
+        left: 4px;
+        top: 0px;
+        width: 5px;
+        height: 10px;
+        border: solid #fff;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+      }
+
+      label span {
+        flex: 1;
+        font-size: 13px;
+      }
     </style>
   </head>
   <body>
@@ -195,12 +243,12 @@
     <!-- Modal -->
     <div id="image-modal">
       <div class="modal-content">
-        <h3 id="modal-title">Bildauswahl</h3>
+        <h3 id="modal-title">Image selection</h3>
         <div id="modal-gallery"></div>
         <div class="modal-buttons">
-          <button id="modal-save">Speichern</button>
-          <button id="modal-none">Kein Bild</button>
-          <button id="modal-cancel">Abbrechen</button>
+          <button id="modal-save">Save</button>
+          <button id="modal-none">No image</button>
+          <button id="modal-cancel">Cancel</button>
         </div>
       </div>
     </div>

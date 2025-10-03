@@ -1,0 +1,85 @@
+{
+  "animals": {
+    "files": [
+      "images/animals/pexels-george-desipris-792381.jpg"
+    ]
+  },
+  "anime": {
+    "files": [
+      "images/anime/anime.jpg",
+      "images/anime/erde-im-anime-stil.jpg",
+      "images/anime/full-shot-ninja-wearing-equipment.jpg",
+      "images/anime/full-shot-ninja-winter-season.jpg",
+      "images/anime/mythisches-drachentier-im-anime-stil.jpg"
+    ]
+  },
+  "beach": {
+    "files": [
+      "images/beach/luca-micheli-ruWkmt3nU58-unsplash.jpg",
+      "images/beach/sean-oulashin-KMn4VEeEPR8-unsplash.jpg"
+    ]
+  },
+  "city": {
+    "files": [
+      "images/city/charles-postiaux-q_xbE7RSvBI-unsplash.jpg",
+      "images/city/jezael-melgoza-layMbSJ3YOE-unsplash.jpg",
+      "images/city/simon-l-7GLJ96AjemY-unsplash.jpg",
+      "images/city/sorasak-_UIN-pFfJ7c-unsplash.jpg",
+      "images/city/timo-volz-DGsqL2j028E-unsplash.jpg",
+      "images/city/yoav-aziz-tKCd-IWc4gI-unsplash.jpg"
+    ]
+  },
+  "landscape": {
+    "files": [
+      "images/landscape/andrew-ridley-Kt5hRENuotI-unsplash.jpg",
+      "images/landscape/aniket-deole-M6XC789HLe8-unsplash.jpg",
+      "images/landscape/christian-joudrey-mWRR1xj95hg-unsplash.jpg",
+      "images/landscape/cristina-gottardi-wndpWTiDuT0-unsplash.jpg",
+      "images/landscape/damian-patkowski-T-LfvX-7IVg-unsplash.jpg",
+      "images/landscape/diego-jimenez-A-NVHPka9Rk-unsplash.jpg",
+      "images/landscape/jim-cooke-r6g4GcD6lP0-unsplash.jpg",
+      "images/landscape/johannes-plenio-hvrpOmuMrAI-unsplash.jpg",
+      "images/landscape/john-towner-JgOeRuGD_Y4-unsplash.jpg",
+      "images/landscape/jonatan-pie-P2vi01BW8vE-unsplash.jpg",
+      "images/landscape/karsten-wurth-B5drkS_Z5RM-unsplash.jpg",
+      "images/landscape/ken-cheung-KonWFWUaAuk-unsplash.jpg",
+      "images/landscape/luca-bravo-ESkw2ayO2As-unsplash.jpg",
+      "images/landscape/luca-micheli-r9RW20TrQ0Y-unsplash.jpg",
+      "images/landscape/mar-bustos-ARVFsI-32Uk-unsplash.jpg",
+      "images/landscape/neom-THlO6Mkf5uI-unsplash.jpg",
+      "images/landscape/neom-XN6Z9g3DM4A-unsplash.jpg",
+      "images/landscape/pascal-debrunner-1WQ5RZuH9xo-unsplash.jpg",
+      "images/landscape/pietro-de-grandi-T7K4aEPoGGk-unsplash.jpg",
+      "images/landscape/robert-lukeman-zNN6ubHmruI-unsplash.jpg",
+      "images/landscape/rodrigo-soares-c6SciRp2kaQ-unsplash.jpg",
+      "images/landscape/tobias-keller-73F4pKoUkM0-unsplash.jpg"
+    ]
+  },
+  "shape": {
+    "files": [
+      "images/shape/ashim-d-silva-WeYamle9fDM-unsplash.jpg"
+    ]
+  },
+  "sky": {
+    "files": [
+      "images/sky/ryan-hutton-Jztmx9yqjBw-unsplash.jpg"
+    ]
+  },
+  "skyline": {
+    "files": [
+      "images/skyline/andre-benz-lIa03ti94ec-unsplash.jpg",
+      "images/skyline/brad-knight-huWlb1NP67w-unsplash.jpg",
+      "images/skyline/ishan-seefromthesky-6U-sSfBV-gM-unsplash.jpg",
+      "images/skyline/jeff-brown-4Y_f_LvAu3U-unsplash.jpg",
+      "images/skyline/jeremy-doddridge-DnHUeDYzpUo-unsplash.jpg",
+      "images/skyline/luca-bravo-_QdFx92MO2U-unsplash.jpg",
+      "images/skyline/matthew-henry-VviFtDJakYk-unsplash.jpg",
+      "images/skyline/muzammil-soorma-KTdzeb28jyo-unsplash.jpg",
+      "images/skyline/mvrkle-RP7pgDrWcwE-unsplash.jpg",
+      "images/skyline/sagar-bhujel-Lg6PQ41-2Hc-unsplash.jpg",
+      "images/skyline/shawn-IdG-GxbBMSc-unsplash.jpg",
+      "images/skyline/su-san-lee-E_eWwM29wfU-unsplash.jpg",
+      "images/skyline/thomas-habr-wprOCzLIEYI-unsplash.jpg"
+    ]
+  }
+}

@@ -23,12 +23,7 @@
   "host_permissions": ["https://web.whatsapp.com/"],
   "web_accessible_resources": [
     {
-      "resources": [
-        "images/anime.jpg",
-        "images/full-shot-ninja-winter-season.jpg",
-        "images/full-shot-ninja-wearing-equipment.jpg",
-        "images/pexels-george-desipris-792381.jpg"
-      ],
+      "resources": ["images/*", "images/*/*", "images/*/*/*"],
       "matches": ["https://web.whatsapp.com/*"]
     }
   ]

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Burger Menu Toggle Extension",
-  "version": "1.0",
-  "description": "Toggles side menu and hides Status, Channels, Communities.",
+  "name": "WhatsApp Web Customizer",
+  "version": "1.0.1",
+  "description": "Customize your own WhatsApp Web Experience.",
   "permissions": ["storage", "scripting"],
   "action": {
     "default_popup": "popup.html",

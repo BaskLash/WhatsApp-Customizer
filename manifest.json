@@ -20,6 +20,7 @@
         "changeColor.js",
         "fontFamilyChange.js",
         "changeContent.js",
+        "quick-reply-bubbles.js",
         "content.js"
       ],
       "run_at": "document_idle"

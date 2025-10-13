@@ -5,8 +5,7 @@ function initBurgerMenu() {
     ".x1c4vz4f.xs83m0k.xdl72j9.x1g77sc7.x78zum5.xozqiw3.x1oa3qoh.x12fk4p8.xeuugli.x2lwn1j.x1nhvcw1.xdt5ytf.x1cy8zhl.x1277o0a";
 
   // Selektor für die Home-Chat-Übersicht
-  const homeChatSelector =
-    "._aigw._as6h.x9f619.x1n2onr6.x5yr21d.x17dzmu4.x1i1dayz.x2ipvbc.x1w8yi2h.x78zum5.xdt5ytf.x12xzxwr.x1plvlek.xryxfnj.x14bqcqg.x18dvir5.xxljpkc.xwfak60.x18pi947";
+  const homeChatSelector = ".two > :nth-child(4)";
 
   // Funktion zum Initialisieren des Burger-Menüs
   function tryInit() {

@@ -149,3 +149,15 @@ document.getElementById("discoButton3").addEventListener("click", function () {
     if (colorInput) colorInput.value = "#000000";
   });
 });
+
+document
+      .getElementById("report-bug")
+      .addEventListener("click", () => {
+        window.open("https://forms.gle/U7jteYT8hpM19pWZA", "_blank");
+      });
+
+      document
+      .getElementById("feature-request")
+      .addEventListener("click", () => {
+        window.open("https://forms.gle/9Svkf6pVknArjamz9", "_blank");
+      });

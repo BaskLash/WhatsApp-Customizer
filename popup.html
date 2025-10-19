@@ -132,6 +132,25 @@
         border-radius: 8px;
       }
 
+      /* Upload Button */
+#modal-upload {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background: var(--accent-color);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#modal-upload:hover {
+  background: var(--accent-hover);
+  box-shadow: var(--glow);
+}
+
       /* Checkbox Styles */
       label {
         display: flex;
@@ -444,11 +463,13 @@
       <div class="modal-content">
         <h3 id="modal-title">Image Selection</h3>
         <div id="modal-gallery"></div>
-        <div class="modal-buttons">
-          <button id="modal-save">Save</button>
-          <button id="modal-none">No Image</button>
-          <button id="modal-cancel">Cancel</button>
-        </div>
+       <div class="modal-buttons">
+  <button id="modal-upload">Upload Image</button>
+  <input type="file" id="image-upload-input" accept="image/*" style="display: none;" />
+  <button id="modal-save">Save</button>
+  <button id="modal-none">No Image</button>
+  <button id="modal-cancel">Cancel</button>
+</div>
       </div>
     </div>
   </body>

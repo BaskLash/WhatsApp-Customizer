@@ -13,7 +13,6 @@ function stopKeepingPopupAlive() {
   keepAliveInterval = null;
 }
 
-
 const imageCache = new Map();
 let imageData = null;
 let currentType = null;
@@ -66,7 +65,9 @@ document.addEventListener("DOMContentLoaded", () => {
         // Cache all predefined and uploaded images
         allImages.forEach((src) => preloadImage(src));
         uploadedImages.forEach((img) => preloadImage(img.dataUrl));
-        console.log(`✅ Preloaded ${allImages.length + uploadedImages.length} images.`);
+        console.log(
+          `✅ Preloaded ${allImages.length + uploadedImages.length} images.`,
+        );
 
         // Build modal gallery
         renderGallery();
@@ -142,7 +143,10 @@ function getAllImages(data) {
     if (Array.isArray(files)) {
       files.forEach((src) => {
         // For uploaded images, use dataUrl; for others, use src
-        const imgSrc = cat === "uploaded" ? uploadedImages.find((img) => img.filename === src)?.dataUrl || src : src;
+        const imgSrc =
+          cat === "uploaded"
+            ? uploadedImages.find((img) => img.filename === src)?.dataUrl || src
+            : src;
         set.add(imgSrc);
       });
     }
@@ -173,10 +177,10 @@ function selectImageInGallery(src) {
   if (option) {
     option.classList.add("selected");
     selectedSrc = src;
-    modalGallery.scrollTo({
-      top: option.offsetTop - modalGallery.offsetTop,
-      behavior: "smooth",
-    });
+    // modalGallery.scrollTo({
+    //  top: option.offsetTop - modalGallery.offsetTop,
+    //  behavior: "smooth",
+    // });
   }
 }
 
@@ -203,12 +207,37 @@ function renderGallery() {
       img.loading = "lazy";
       option.appendChild(img);
 
+      // 🔴 Lösch-Button nur für hochgeladene Bilder
+      const isUploaded = uploadedImages.some((img) => img.dataUrl === src);
+      if (isUploaded) {
+        const delBtn = document.createElement("button");
+        delBtn.className = "delete-btn";
+        delBtn.textContent = "✕";
+        delBtn.title = "Delete image";
+        delBtn.addEventListener("click", (e) => {
+          e.stopPropagation(); // verhindert, dass das Bild ausgewählt wird
+          deleteUploadedImage(src);
+        });
+        option.appendChild(delBtn);
+      }
+
       option.addEventListener("click", () => {
         modalGallery
           .querySelectorAll(".image-option")
           .forEach((el) => el.classList.remove("selected"));
         option.classList.add("selected");
         selectedSrc = src;
+
+        // 🆕 Preview sofort aktualisieren
+        if (currentType) {
+          const previewImg = document.getElementById(`${currentType}-preview`);
+          previewImg.src = src.startsWith("data:")
+            ? src
+            : chrome.runtime.getURL(src);
+
+          // 🆕 Direkt speichern (optional)
+          // chrome.storage.local.set({ [currentType]: src });
+        }
       });
 
       fragment.appendChild(option);
@@ -223,6 +252,41 @@ function renderGallery() {
   }
 
   renderBatch();
+}
+
+function deleteUploadedImage(src) {
+  const index = uploadedImages.findIndex((img) => img.dataUrl === src);
+  if (index === -1) return;
+
+  const removed = uploadedImages.splice(index, 1)[0];
+  console.log("🗑️ Image deleted:", removed.filename);
+
+  // Aus imageData.uploaded entfernen
+  if (imageData?.uploaded?.files) {
+    imageData.uploaded.files = imageData.uploaded.files.filter(
+      (file) => file !== removed.filename,
+    );
+  }
+
+  // Speicher aktualisieren
+  chrome.storage.local.set({ uploadedImages }, () => {
+    // Wenn das gelöschte Bild aktiv ist → Preview zurücksetzen
+    const previewIds = ["welcome", "sidenav", "chatview", "navside"];
+    chrome.storage.local.get(previewIds, (result) => {
+      previewIds.forEach((type) => {
+        if (result[type] === src) {
+          chrome.storage.local.remove(type);
+          document.getElementById(`${type}-preview`).src = "default.jpg";
+        }
+      });
+    });
+
+    // Galerie neu rendern
+    renderGallery();
+
+    // ✅ Bestätigung anzeigen
+    alert(`✅ The image “${removed.filename}” has been successfully deleted.`);
+  });
 }
 
 // 4. Modal logic

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "WhatsApp Web Customizer",
+  "name": "WhatsApp Web Customizer – Themes, Fonts, Backgrounds & Quick Reply Bubbles",
   "version": "1.0.1",
-  "description": "Customize your own WhatsApp Web Experience.",
+  "description": "Personalize WhatsApp Web with themes, fonts, backgrounds, and fast-reply tools. Lightweight, clean, and fully open source.",
   "permissions": ["storage", "scripting"],
   "action": {
     "default_popup": "popup.html",

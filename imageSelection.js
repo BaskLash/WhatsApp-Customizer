@@ -1,88 +1,122 @@
-// Beim Laden des Popups gespeicherte Bilder setzen
-document.addEventListener("DOMContentLoaded", () => {
-  const previewIds = ["welcome", "sidenav", "chatview", "navside"];
-
-  chrome.storage.local.get(previewIds, (result) => {
-    previewIds.forEach((id) => {
-      const previewImg = document.getElementById(`${id}-preview`);
-      if (result[id]) {
-        previewImg.src = chrome.runtime.getURL(result[id]);
-      } else {
-        previewImg.src = "default.jpg";
-      }
-    });
-  });
-});
-
+const imageCache = new Map();
+let imageData = null;
 let currentType = null;
 let selectedSrc = null;
-const imageCache = new Map(); // Cache für geladene Bilder
 
+// DOM Elements
 const modal = document.getElementById("image-modal");
 const modalGallery = document.getElementById("modal-gallery");
 const modalTitle = document.getElementById("modal-title");
 
-// Alle eindeutigen Bilder aus allen Kategorien sammeln
-function getAllImages(data) {
-  const imagesSet = new Set();
-  for (const category in data) {
-    if (data[category].files && Array.isArray(data[category].files)) {
-      data[category].files.forEach((src) => imagesSet.add(src));
-    }
-  }
-  return Array.from(imagesSet);
-}
+// 1. Preload & build gallery automatically
+document.addEventListener("DOMContentLoaded", () => {
+  const previewIds = ["welcome", "sidenav", "chatview", "navside"];
 
-// Bild aus Cache laden oder neu erstellen
-function getCachedImage(src) {
-  if (imageCache.has(src)) {
-    return imageCache.get(src); // schon geladenes Image zurückgeben
-  }
+  // Load previews from storage
+  chrome.storage.local.get(previewIds, (result) => {
+    previewIds.forEach((id) => {
+      const previewImg = document.getElementById(`${id}-preview`);
+      previewImg.src = result[id]
+        ? chrome.runtime.getURL(result[id])
+        : "default.jpg";
+    });
+  });
 
-  const img = new Image();
-  img.src = chrome.runtime.getURL(src);
-  imageCache.set(src, img); // direkt ins Cache setzen
-  return img;
-}
-
-function openModal(type) {
-  currentType = type;
-  modalTitle.textContent = `Image selection for ${type}`;
-  modalGallery.innerHTML = "";
-  selectedSrc = null;
-
+  // Preload image list + cache + render gallery immediately
   fetch(chrome.runtime.getURL("images.json"))
     .then((res) => res.json())
     .then((data) => {
-      const images = getAllImages(data);
-      const fragment = document.createDocumentFragment();
+      imageData = data;
+      const allImages = getAllImages(data);
 
-      for (const src of images) {
-        const option = document.createElement("div");
-        option.className = "image-option";
-        option.dataset.src = src;
+      // Cache all
+      allImages.forEach((src) => preloadImage(src));
+      console.log(`✅ Preloaded ${allImages.length} images.`);
 
-        // Bild direkt aus Cache oder neu
-        const img = getCachedImage(src).cloneNode();
-        img.alt = "";
-        img.loading = "lazy"; // native lazy loading
-        option.appendChild(img);
+      // Build modal gallery once
+      renderGallery();
+    })
+    .catch((err) => console.error("❌ Failed to preload images:", err));
+});
 
-        option.addEventListener("click", () => {
-          modalGallery
-            .querySelectorAll(".image-option")
-            .forEach((el) => el.classList.remove("selected"));
-          option.classList.add("selected");
-          selectedSrc = src;
-        });
+// 2. Helpers
+function getAllImages(data) {
+  const set = new Set();
+  for (const cat in data) {
+    const files = data[cat].files;
+    if (Array.isArray(files)) files.forEach((src) => set.add(src));
+  }
+  return [...set];
+}
 
-        fragment.appendChild(option);
-      }
+function preloadImage(src) {
+  if (!imageCache.has(src)) {
+    const img = new Image();
+    img.src = chrome.runtime.getURL(src);
+    img.loading = "lazy";
+    img.onerror = () => console.warn(`⚠️ Failed to preload: ${src}`);
+    imageCache.set(src, img);
+  }
+}
 
-      modalGallery.appendChild(fragment);
-    });
+function getCachedImage(src) {
+  if (!imageCache.has(src)) preloadImage(src);
+  return imageCache.get(src);
+}
 
+// 3. Build the gallery once (progressively)
+function renderGallery() {
+  if (!imageData) return;
+  const images = getAllImages(imageData);
+  const BATCH_SIZE = 20;
+  let index = 0;
+
+  function renderBatch() {
+    const fragment = document.createDocumentFragment();
+    const end = Math.min(index + BATCH_SIZE, images.length);
+
+    for (let i = index; i < end; i++) {
+      const src = images[i];
+      const option = document.createElement("div");
+      option.className = "image-option";
+      option.dataset.src = src;
+
+      const img = getCachedImage(src).cloneNode();
+      img.alt = "";
+      img.loading = "lazy";
+      option.appendChild(img);
+
+      option.addEventListener("click", () => {
+        modalGallery
+          .querySelectorAll(".image-option")
+          .forEach((el) => el.classList.remove("selected"));
+        option.classList.add("selected");
+        selectedSrc = src;
+      });
+
+      fragment.appendChild(option);
+    }
+
+    modalGallery.appendChild(fragment);
+    index = end;
+
+    if (index < images.length) {
+      requestIdleCallback(renderBatch, { timeout: 100 });
+    }
+  }
+
+  renderBatch();
+}
+
+// 4. Modal logic
+function openModal(type) {
+  currentType = type;
+  modalTitle.textContent = `Image selection for ${type}`;
+  
   modal.style.display = "flex";
+
+  // Reset scroll position to top
+  modalGallery.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function closeModal() {
@@ -91,7 +125,7 @@ function closeModal() {
   selectedSrc = null;
 }
 
-// Modal Buttons
+// 5. Buttons
 document.getElementById("modal-save").addEventListener("click", () => {
   if (currentType && selectedSrc) {
     chrome.storage.local.set({ [currentType]: selectedSrc });
@@ -111,10 +145,8 @@ document.getElementById("modal-none").addEventListener("click", () => {
 
 document.getElementById("modal-cancel").addEventListener("click", closeModal);
 
-// Klick auf image-option oder image-selector öffnet Modal
-document.querySelectorAll(".image-selector, .image-option").forEach((el) => {
-  el.addEventListener("click", (e) => {
-    const type = e.target.closest(".image-option")?.dataset.type;
-    if (type) openModal(type);
-  });
+// 6. Trigger modal
+document.addEventListener("click", (e) => {
+  const option = e.target.closest(".image-option[data-type]");
+  if (option) openModal(option.dataset.type);
 });

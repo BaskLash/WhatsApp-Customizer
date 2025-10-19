@@ -310,30 +310,30 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 // Funktion, die die Schrift global setzt
 function applyFont(fontName) {
-  // Entferne alte Tags, falls vorhanden
   let existingLink = document.getElementById("dynamicFontLink");
   let existingStyle = document.getElementById("dynamicFontStyle");
 
   if (existingLink) existingLink.remove();
   if (existingStyle) existingStyle.remove();
 
-  if (!fontName) return; // Keine Schrift ausgewählt, nichts tun
+  if (!fontName) return;
 
-  // --- 1. Google Font Link einfügen ---
+  // 1. Google Font Link
   const link = document.createElement("link");
   link.id = "dynamicFontLink";
   link.rel = "stylesheet";
-  link.href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(
-    fontName.trim()
-  )}&display=swap`;
+  link.href = `https://fonts.googleapis.com/css2?family=${fontName}&display=swap`;
   document.head.appendChild(link);
 
-  // --- 2. Style-Tag hinzufügen, Schrift global setzen ---
+  // 2. Replace + with space for CSS
+  const cssFontName = fontName.replace(/\+/g, " ");
+
+  // 3. Style tag
   const style = document.createElement("style");
   style.id = "dynamicFontStyle";
   style.innerHTML = `
     * {
-      font-family: '${fontName}', sans-serif !important;
+      font-family: '${cssFontName}', sans-serif !important;
     }
   `;
   document.head.appendChild(style);

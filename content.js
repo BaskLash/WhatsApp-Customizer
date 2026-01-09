@@ -352,3 +352,23 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
     applyFont(newFont);
   }
 });
+
+// --- FONT SCALING LOGIC ---
+
+function applyInterfaceScale(scale) {
+  if (!scale) return;
+  document.body.style.zoom = scale;
+}
+
+// 1. Initial load
+chrome.storage.local.get(["wa-custom-scale"], (result) => {
+  const savedScale = result["wa-custom-scale"] || 1;
+  applyInterfaceScale(savedScale);
+});
+
+// 2. Live updates from popup
+chrome.storage.onChanged.addListener((changes, areaName) => {
+  if (areaName === "local" && changes["wa-custom-scale"]) {
+    applyInterfaceScale(changes["wa-custom-scale"].newValue);
+  }
+});

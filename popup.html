@@ -420,6 +420,25 @@
     #reset-scale:hover {
       background: #666;
     }
+    .section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.badge-new {
+  background-color: #00a884; /* WhatsApp Grün */
+  color: white;
+  font-size: 9px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+  vertical-align: middle;
+}
   </style>
 </head>
 
@@ -547,14 +566,15 @@
       </div>
 
       <div class="section">
-        <h3>Change Font Size</h3>
+        <div class="section-header">
+          <h3>Change Font Size</h3>
+          <span class="badge-new">NEW</span>
+        </div>
 
         <div class="scale-container">
-          <!-- Slider -->
           <input type="range" id="font-scale-slider" min="0.5" max="1.5" step="0.05" value="1" />
 
           <div class="scale-footer">
-            <!-- Percent input -->
             <input type="number" id="scale-percent-input" min="50" max="150" step="1" value="100" />
             <span>%</span>
 
